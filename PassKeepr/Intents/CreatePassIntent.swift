@@ -35,7 +35,7 @@ struct CreatePassIntent: AppIntent {
                 throw IntentError.noBarcodeFound
             }
             payload = detected.payload
-            barcodeType = detected.barcodeType
+            barcodeType = detected.symbology.toBarcodeType() ?? .qr
         } else if let barcodeData, !barcodeData.isEmpty {
             payload = barcodeData
         } else {
@@ -59,7 +59,7 @@ struct CreatePassIntent: AppIntent {
         return .result(value: entity)
     }
 
-    private func detectBarcode(in file: IntentFile) async throws -> (payload: String, barcodeType: BarcodeType)? {
+    private func detectBarcode(in file: IntentFile) async throws -> (payload: String, symbology: VNBarcodeSymbology)? {
         let data = try Data(contentsOf: file.fileURL)
         guard let ciImage = CIImage(data: data) else { return nil }
 
@@ -71,7 +71,7 @@ struct CreatePassIntent: AppIntent {
               let payload = barcode.payloadStringValue
         else { return nil }
 
-        return (payload, BarcodeType(from: barcode.symbology))
+        return (payload, barcode.symbology)
     }
 }
 
@@ -85,19 +85,6 @@ enum IntentError: Error, CustomLocalizedStringResourceConvertible {
             "No barcode was found in the provided image."
         case .missingBarcode:
             "Provide a barcode value or an image containing a barcode."
-        }
-    }
-}
-
-extension BarcodeType {
-    init(from symbology: VNBarcodeSymbology) {
-        switch symbology {
-        case .qr: self = .qr
-        case .code128: self = .code128
-        case .code93: self = .code93
-        case .code39: self = .code39
-        case .pdf417: self = .pdf417
-        default: self = .qr
         }
     }
 }
