@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 class ModelData: ObservableObject {
     struct PassKeeprData: Codable {
         var passObjects: [PassObject]

@@ -47,9 +47,11 @@ struct CreatePassIntent: AppIntent {
         pass.barcodeString = payload
         pass.barcodeType = barcodeType
 
-        let modelData = ModelData()
-        modelData.passObjects.append(pass)
-        modelData.encodePassObjects()
+        await MainActor.run {
+            let modelData = ModelData()
+            modelData.passObjects.append(pass)
+            modelData.encodePassObjects()
+        }
 
         let entity = PassEntity(
             id: pass.id,
