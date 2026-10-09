@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F22D410641C4BB2BB40CDBE /* AppSupportDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42B2EDC92685445FA46CB63C /* AppSupportDirectory.swift */; };
 		A8CDA4C307B04FDCB8CA6186 /* PassEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71415028D6744A038A1607B8 /* PassEntity.swift */; };
 		C54284653B2F4ADB98A6BBE6 /* CreatePassIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1806BEFA223448C9A32A7826 /* CreatePassIntent.swift */; };
 		3A02E73A2AF6EE1000383BC2 /* PassKeeprApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A02E7392AF6EE1000383BC2 /* PassKeeprApp.swift */; };
@@ -141,6 +142,7 @@
 
 /* Begin PBXFileReference section */
 		3A02E7362AF6EE1000383BC2 /* PassKeepr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PassKeepr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		42B2EDC92685445FA46CB63C /* AppSupportDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSupportDirectory.swift; sourceTree = "<group>"; };
 		71415028D6744A038A1607B8 /* PassEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassEntity.swift; sourceTree = "<group>"; };
 		1806BEFA223448C9A32A7826 /* CreatePassIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePassIntent.swift; sourceTree = "<group>"; };
 		3A02E7392AF6EE1000383BC2 /* PassKeeprApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassKeeprApp.swift; sourceTree = "<group>"; };
@@ -505,6 +507,7 @@
 				BAE2D4542B80F2B600CC7BE2 /* ExtendBarcodeType.swift */,
 				BA6DACF62D394C1400C2FD90 /* ExtendVNBarcodeSymbology.swift */,
 				BAEE421F2CC436FA00A3F7A1 /* SignPass.swift */,
+				42B2EDC92685445FA46CB63C /* AppSupportDirectory.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -744,6 +747,7 @@
 				BA5FBE9A2F2F07BB00C7AA2A /* ImportPass.swift in Sources */,
 				3A02E73A2AF6EE1000383BC2 /* PassKeeprApp.swift in Sources */,
 				A8CDA4C307B04FDCB8CA6186 /* PassEntity.swift in Sources */,
+				5F22D410641C4BB2BB40CDBE /* AppSupportDirectory.swift in Sources */,
 				C54284653B2F4ADB98A6BBE6 /* CreatePassIntent.swift in Sources */,
 				BA409E422CF427160079193E /* EditablePassCard.swift in Sources */,
 				BAA53E182D0E3AF5004A175A /* CustomizePassTextField.swift in Sources */,

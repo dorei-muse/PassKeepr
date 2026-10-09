@@ -6,8 +6,8 @@ struct EditPass: View {
     @EnvironmentObject var passSigner: pkPassSigner
     @Environment(\.colorScheme) var colorScheme
 
-    // Pass object passed into this view.
-    // We want to update this object when the save button is pressed
+    /// Pass object passed into this view.
+    /// We want to update this object when the save button is pressed
     @Binding var objectToEdit: PassObject
 
     @State private var attemptToDismiss = UUID()
@@ -39,8 +39,8 @@ struct EditPass: View {
     @State private var isCustomizeBarcodePresented = false
     @State private var isCustomizeQrCodePresented = false
 
-    // On init, set the temp object owned by this view equal to the
-    // one passed in via @Binding
+    /// On init, set the temp object owned by this view equal to the
+    /// one passed in via @Binding
     init(objectToEdit: Binding<PassObject>, isNewPass: Bool) {
         _objectToEdit = objectToEdit
         self.isNewPass = isNewPass
@@ -210,8 +210,7 @@ struct EditPass: View {
                     hasEditPassButtonBeenPressed = false // Disable loading circle
                 }
             } else {
-                let fileManager = FileManager.default
-                let appSupportDirectory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                guard let appSupportDirectory = AppSupportDirectory.url else { return }
                 let destinationURL = appSupportDirectory.appendingPathComponent("\(tempObject.id).pkpass")
 
                 ActivityView(activityItems: [destinationURL]) {
@@ -290,7 +289,7 @@ struct EditPass: View {
             return (false, "Deleting existing pass data was unsuccessful: \(error.localizedDescription)")
         }
 
-        if isNewPass && !modelData.passObjects.contains(where: { $0.id == objectToEdit.id }) {
+        if isNewPass, !modelData.passObjects.contains(where: { $0.id == objectToEdit.id }) {
             modelData.passObjects.append(objectToEdit)
         }
 

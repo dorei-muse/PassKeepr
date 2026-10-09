@@ -24,7 +24,7 @@ class ModelData: ObservableObject {
     }
 
     func load<T: Decodable>(_ filename: String) -> T? {
-        let applicationSupportDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        guard let applicationSupportDirectory = AppSupportDirectory.url else { return nil }
         let file = applicationSupportDirectory.appendingPathComponent(filename)
         let data: Data
 
@@ -43,7 +43,7 @@ class ModelData: ObservableObject {
     }
 
     func encode<T: Encodable>(_ filename: String, _ data: T) {
-        let applicationSupportDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        guard let applicationSupportDirectory = AppSupportDirectory.url else { return }
         let file = applicationSupportDirectory.appendingPathComponent(filename)
 
         do {
@@ -71,7 +71,7 @@ class ModelData: ObservableObject {
     }
 
     func deleteDataFile() {
-        let applicationSupportDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        guard let applicationSupportDirectory = AppSupportDirectory.url else { return }
         let fileURL = applicationSupportDirectory.appendingPathComponent(filename)
 
         do {

@@ -54,8 +54,7 @@ class pkPassSigner: NSObject, ObservableObject, URLSessionDelegate {
 
                     // Save the response data to a file
                     if let data = data {
-                        let fileManager = FileManager.default
-                        let appSupportDirectory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                        guard let appSupportDirectory = AppSupportDirectory.url else { return }
                         let destinationURL = appSupportDirectory.appendingPathComponent("\(passUuid).pkpass")
                         DispatchQueue.main.async {
                             self.fileURL = destinationURL
@@ -94,8 +93,8 @@ class pkPassSigner: NSObject, ObservableObject, URLSessionDelegate {
         print("waiting for pass to be signed, isDataLoaded = false")
     }
 
-    // Trust the self-signed certificate
-    // Called by URLSession automatically as a delegate method when it sees an untrusted cert
+    /// Trust the self-signed certificate
+    /// Called by URLSession automatically as a delegate method when it sees an untrusted cert
     func urlSession(_: URLSession, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         if challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust {
             if let serverTrust = challenge.protectionSpace.serverTrust {
