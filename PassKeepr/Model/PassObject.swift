@@ -373,8 +373,12 @@ enum QrCodeEncoding: Codable, CustomStringConvertible, CaseIterable {
     }
 
     static func minimumEncoding(for string: String) -> QrCodeEncoding {
-        if string.data(using: .ascii) != nil { return .ascii }
-        if string.data(using: .utf8) != nil { return .utf8 }
+        if string.data(using: .ascii) != nil {
+            return .ascii
+        }
+        if string.data(using: .utf8) != nil {
+            return .utf8
+        }
         return .unicode
     }
 
@@ -433,9 +437,14 @@ enum BarcodeType: Codable, CustomStringConvertible, Identifiable, CaseIterable {
     case code128 // natively supported by PassKit
     case code93
     case code39
+    case code39Checksum
+    case code39FullASCII
+    case code39FullASCIIChecksum
     case upce
     case upca
     case ean13
+    case ean8
+    case itf14
     case pdf417 // natively supported by PassKit
     case qr
 
@@ -445,15 +454,22 @@ enum BarcodeType: Codable, CustomStringConvertible, Identifiable, CaseIterable {
         case .code128: return "Code 128"
         case .code93: return "Code 93"
         case .code39: return "Code 39"
+        case .code39Checksum: return "Code 39 Checksum"
+        case .code39FullASCII: return "Code 39 Full ASCII"
+        case .code39FullASCIIChecksum: return "Code 39 Full ASCII Checksum"
         case .upce: return "UPC-E"
         case .upca: return "UPC-A"
         case .ean13: return "EAN-13"
+        case .ean8: return "EAN-8"
+        case .itf14: return "ITF-14"
         case .pdf417: return "PDF417"
         case .qr: return "QR Code"
         }
     }
 
-    var id: Self { self }
+    var id: Self {
+        self
+    }
 }
 
 enum ImageType: Codable, CustomStringConvertible, CaseIterable {
