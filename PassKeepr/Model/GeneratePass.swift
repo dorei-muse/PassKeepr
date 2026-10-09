@@ -1,6 +1,9 @@
 import Foundation
+import os
 import UIKit
 import ZIPFoundation
+
+private let logger = Logger(subsystem: "com.hanshaw.passKeepr", category: "GeneratePass")
 
 // Helper: save 1x and optional @2x/@3x variants from PassObject image
 func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWidth: CGFloat, maxHeight: CGFloat) {
@@ -15,7 +18,7 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
     let srcPixelH: CGFloat = (ui.cgImage != nil) ? CGFloat(ui.cgImage!.height) : (ui.size.height * ui.scale)
 
     // Debug: initial sizes
-    print("[saveImageVariants] name=\(name) srcPixels=\(Int(srcPixelW))x\(Int(srcPixelH)) ui.size=\(ui.size) ui.scale=\(ui.scale)")
+    logger.debug("[saveImageVariants] name=\(name) srcPixels=\(Int(srcPixelW))x\(Int(srcPixelH)) ui.size=\(ui.size) ui.scale=\(ui.scale)")
 
     // Thresholds for 1x/2x/3x
     let t1W = maxWidth
@@ -24,7 +27,7 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
     let t2H = maxHeight * 2.0
     let t3W = maxWidth * 3.0
     let t3H = maxHeight * 3.0
-    print("[saveImageVariants] thresholds: 1x=\(Int(t1W))x\(Int(t1H)) 2x=\(Int(t2W))x\(Int(t2H)) 3x=\(Int(t3W))x\(Int(t3H))")
+    logger.debug("[saveImageVariants] thresholds: 1x=\(Int(t1W))x\(Int(t1H)) 2x=\(Int(t2W))x\(Int(t2H)) 3x=\(Int(t3W))x\(Int(t3H))")
 
     // Helper to save data or resized image for a given pixel size
     func saveResized(_ targetW: Int, _ targetH: Int, fileSuffix: String?) {
@@ -35,11 +38,11 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
     }
 
     // Determine classification and generate accordingly using per-axis (OR) checks
-    print("[saveImageVariants] per-axis thresholds check: 1x=\(Int(t1W))x\(Int(t1H)) 2x=\(Int(t2W))x\(Int(t2H)) 3x=\(Int(t3W))x\(Int(t3H))")
+    logger.debug("[saveImageVariants] per-axis thresholds check: 1x=\(Int(t1W))x\(Int(t1H)) 2x=\(Int(t2W))x\(Int(t2H)) 3x=\(Int(t3W))x\(Int(t3H))")
 
     // Any axis above 2x -> classify as 3x
     if srcPixelW >= t2W || srcPixelH >= t2H {
-        print("[saveImageVariants] classification=3x (axis-based)")
+        logger.debug("[saveImageVariants] classification=3x (axis-based)")
         let final3xW: Int
         let final3xH: Int
 
@@ -47,7 +50,7 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
         // Otherwise, keep original dimensions for 3x variant
         if (srcPixelW > t3W) || (srcPixelH > t3H) {
             let downscale = min(t3W / srcPixelW, t3H / srcPixelH)
-            print("[saveImageVariants] Downscaling image. downscale=\(downscale)")
+            logger.debug("[saveImageVariants] Downscaling image. downscale=\(downscale)")
             final3xW = max(1, Int((srcPixelW * downscale).rounded()))
             final3xH = max(1, Int((srcPixelH * downscale).rounded()))
         } else {
@@ -55,14 +58,14 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
             final3xH = max(1, Int(srcPixelH.rounded()))
         }
 
-        print("[saveImageVariants] final3x=\(final3xW)x\(final3xH)")
+        logger.debug("[saveImageVariants] final3x=\(final3xW)x\(final3xH)")
         // If the original image is already the correct dimensions for 3x, save it directly (don't bother resizing and risk quality loss from an encode/decode cycle)
         // Otherwise, resize it to 3x dimensions before saving
         if final3xW == Int(srcPixelW.rounded()), final3xH == Int(srcPixelH.rounded()) {
-            print("[saveImageVariants] saving original as \(name)@3x.png")
+            logger.debug("[saveImageVariants] saving original as \(name)@3x.png")
             savePNGToDirectory(pngData: data, destinationDirectory: passDirectory, fileName: "\(name)@3x")
         } else if let png3 = ui.resize(targetSize: CGSize(width: CGFloat(final3xW), height: CGFloat(final3xH)))?.pngData() {
-            print("[saveImageVariants] saving resized 3x \(final3xW)x\(final3xH) as \(name)@3x.png")
+            logger.debug("[saveImageVariants] saving resized 3x \(final3xW)x\(final3xH) as \(name)@3x.png")
             savePNGToDirectory(pngData: png3, destinationDirectory: passDirectory, fileName: "\(name)@3x")
         }
 
@@ -75,35 +78,35 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
         let target1xH = max(1, Int((CGFloat(final3xH) / 3.0).rounded()))
         saveResized(target1xW, target1xH, fileSuffix: nil)
 
-        print("[saveImageVariants] derived 2x=\(target2xW)x\(target2xH) 1x=\(target1xW)x\(target1xH)")
+        logger.debug("[saveImageVariants] derived 2x=\(target2xW)x\(target2xH) 1x=\(target1xW)x\(target1xH)")
 
     } else if srcPixelW >= t1W || srcPixelH >= t1H { // Any axis above 1x -> classify as 2x
-        print("[saveImageVariants] classification=2x (axis-based)")
+        logger.debug("[saveImageVariants] classification=2x (axis-based)")
         let final2xW = max(1, Int(srcPixelW.rounded()))
         let final2xH = max(1, Int(srcPixelH.rounded()))
         savePNGToDirectory(pngData: data, destinationDirectory: passDirectory, fileName: "\(name)@2x")
-        print("[saveImageVariants] saving original as \(name)@2x.png (source dims) \(final2xW)x\(final2xH)")
+        logger.debug("[saveImageVariants] saving original as \(name)@2x.png (source dims) \(final2xW)x\(final2xH)")
 
         let target1xW = max(1, Int((CGFloat(final2xW) / 2.0).rounded()))
         let target1xH = max(1, Int((CGFloat(final2xH) / 2.0).rounded()))
         saveResized(target1xW, target1xH, fileSuffix: nil)
-        print("[saveImageVariants] derived 1x=\(target1xW)x\(target1xH)")
+        logger.debug("[saveImageVariants] derived 1x=\(target1xW)x\(target1xH)")
 
     } else { // Smaller than 1x: only save as 1x
-        print("[saveImageVariants] classification=smaller_than_1x — saving only 1x")
+        logger.debug("[saveImageVariants] classification=smaller_than_1x — saving only 1x")
         savePNGToDirectory(pngData: data, destinationDirectory: passDirectory, fileName: name)
     }
 }
 
-// Fields required by every PassKit pass
-// These are not customizable by the user, so they're kept separate from the PassObject used to otherwise build the pass
+/// Fields required by every PassKit pass
+/// These are not customizable by the user, so they're kept separate from the PassObject used to otherwise build the pass
 let requiredFields: [String: Any] = [
     "formatVersion": 1,
     "teamIdentifier": "NZDS56Z4Q9",
     "organizationName": "PassKeepr",
 ]
 
-// Initializes a new PassKit pass for the given pass
+/// Initializes a new PassKit pass for the given pass
 func generatePass(passObject: PassObject) -> URL? {
     let fileManager = FileManager.default
     let passDirectory = URL.applicationSupportDirectory.appending(path: "\(passObject.id.uuidString).pass")
@@ -132,7 +135,9 @@ func generatePass(passObject: PassObject) -> URL? {
         if !passObject.locations.isEmpty {
             let encoded: [[String: Any]] = passObject.locations.map { loc in
                 var d: [String: Any] = ["latitude": loc.latitude, "longitude": loc.longitude]
-                if !loc.relevantText.isEmpty { d["relevantText"] = loc.relevantText }
+                if !loc.relevantText.isEmpty {
+                    d["relevantText"] = loc.relevantText
+                }
                 return d
             }
             passData.merge(["locations": encoded]) { _, _ in }
@@ -228,11 +233,11 @@ func generatePass(passObject: PassObject) -> URL? {
 
         if shouldStripImageBeAddedToPass(passObject: passObject) {
             if passStyleString != "storeCard" {
-                print("PassObject has stripImage but is not of style 'storeCard'")
+                logger.debug("PassObject has stripImage but is not of style 'storeCard'")
             }
 
             if passObject.backgroundImage != Data() {
-                print("PassObject has background image and strip image. Not saving strip image")
+                logger.debug("PassObject has background image and strip image. Not saving strip image")
             } else {
                 saveSingleScaleImage(from: passObject.stripImage, name: "strip", passDirectory: passDirectory, maxWidth: PassKitConstants.StripImage.width, maxHeight: PassKitConstants.StripImage.height)
             }
@@ -240,7 +245,7 @@ func generatePass(passObject: PassObject) -> URL? {
 
         if shouldBackgroundImageBeAddedToPass(passObject: passObject) {
             if passStyleString != "eventTicket" {
-                print("PassObject should have background image but is not of style 'eventTicket'")
+                logger.debug("PassObject should have background image but is not of style 'eventTicket'")
             }
             saveSingleScaleImage(from: passObject.backgroundImage, name: "background", passDirectory: passDirectory, maxWidth: PassKitConstants.BackgroundImage.width, maxHeight: PassKitConstants.BackgroundImage.height)
         }
@@ -273,7 +278,7 @@ func zipDirectory(uuid: UUID) throws -> URL? {
     do {
         archive = try Archive(url: pkpassDirectory, accessMode: .create)
     } catch {
-        print("Unable to create zip file at path: \(pkpassDirectory.path): \(error)")
+        logger.debug("Unable to create zip file at path: \(pkpassDirectory.path): \(error)")
         return nil
     }
 
@@ -312,11 +317,9 @@ func encodeHeaderFields(passObject: PassObject) -> [String: Any] {
         encodedData.append(headerField2)
     }
 
-    let headerFields: [String: Any] = [
+    return [
         "headerFields": encodedData,
     ]
-
-    return headerFields
 }
 
 func encodeSecondaryFields(passObject: PassObject) -> [String: Any] {
@@ -356,11 +359,9 @@ func encodeSecondaryFields(passObject: PassObject) -> [String: Any] {
         encodedData.append(secondaryField3)
     }
 
-    let secondaryFields: [String: Any] = [
+    return [
         "secondaryFields": encodedData,
     ]
-
-    return secondaryFields
 }
 
 func encodeAuxiliaryFields(passObject: PassObject) -> [String: Any] {
@@ -400,14 +401,12 @@ func encodeAuxiliaryFields(passObject: PassObject) -> [String: Any] {
         encodedData.append(auxiliaryField3)
     }
 
-    let auxiliaryFields: [String: Any] = [
+    return [
         "auxiliaryFields": encodedData,
     ]
-
-    return auxiliaryFields
 }
 
-// Saves an image as a single 1x PNG, downscaling to fit within the given max dimensions if necessary
+/// Saves an image as a single 1x PNG, downscaling to fit within the given max dimensions if necessary
 func saveSingleScaleImage(from data: Data, name: String, passDirectory: URL, maxWidth: CGFloat, maxHeight: CGFloat) {
     guard let ui = UIImage(data: data), let cgImage = ui.cgImage else {
         savePNGToDirectory(pngData: data, destinationDirectory: passDirectory, fileName: name)
@@ -434,9 +433,9 @@ func savePNGToDirectory(pngData: Data, destinationDirectory: URL, fileName: Stri
 
     do {
         try pngData.write(to: destinationURL, options: .atomic)
-        print("Image saved successfully at \(destinationURL.path)")
+        logger.debug("Image saved successfully at \(destinationURL.path)")
     } catch {
-        print("Error saving image: \(error.localizedDescription)")
+        logger.debug("Error saving image: \(error.localizedDescription)")
     }
 }
 
