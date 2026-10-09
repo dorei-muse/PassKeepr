@@ -171,11 +171,13 @@ struct ContentView: View {
                         // Import the .pkpass file and parse it
                         let result = importPass(from: url)
                         if let importedPass = result.pass {
-                            if result.hasNFC { shouldShowNFCAlert = true }
+                            if result.hasNFC {
+                                shouldShowNFCAlert = true
+                            }
 
                             // Add the imported pass to modelData first
                             modelData.passObjects.append(importedPass)
-                            modelData.encodePassObjects()
+                            modelData.save()
 
                             // Set importedPassObject to trigger the sheet with a proper binding
                             importedPassObject = importedPass
@@ -242,7 +244,7 @@ struct ContentView: View {
             else { return false }
             return ai < bi
         }
-        modelData.encodePassObjects()
+        modelData.save()
     }
 }
 

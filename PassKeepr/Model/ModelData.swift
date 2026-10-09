@@ -1,4 +1,7 @@
 import Foundation
+import os
+
+private let logger = Logger(subsystem: "com.hanshaw.passKeepr", category: "ModelData")
 
 @MainActor
 class ModelData: ObservableObject {
@@ -13,62 +16,71 @@ class ModelData: ObservableObject {
     @Published var tutorialStage: Int = 0
 
     init() {
-        if let loadedData: PassKeeprData = load(filename) {
+        Task { await loadFromDisk() }
+    }
+
+    static func loadShared() async -> ModelData {
+        let modelData = ModelData()
+        await modelData.loadFromDisk()
+        return modelData
+    }
+
+    func loadFromDisk() async {
+        do {
+            let loadedData: PassKeeprData = try await load(filename)
             passObjects = loadedData.passObjects
             tutorialStage = loadedData.tutorialStage
+        } catch {
+            logger.error("Failed to load pass data: \(error.localizedDescription)")
         }
     }
 
-    func encodePassObjects() {
+    func encodePassObjects() async throws {
         let data = PassKeeprData(passObjects: passObjects, tutorialStage: tutorialStage)
-        encode(filename, data)
+        try await encode(filename, data)
     }
 
-    func load<T: Decodable>(_ filename: String) -> T? {
-        guard let applicationSupportDirectory = AppSupportDirectory.url else { return nil }
-        let file = applicationSupportDirectory.appendingPathComponent(filename)
-        let data: Data
-
-        do {
-            data = try Data(contentsOf: file)
-        } catch {
-            return nil
-        }
-
-        do {
-            let decoder = JSONDecoder()
-            return try decoder.decode(T.self, from: data)
-        } catch {
-            return nil
+    func save() {
+        Task {
+            do {
+                try await encodePassObjects()
+            } catch {
+                logger.error("Failed to save pass data: \(error.localizedDescription)")
+            }
         }
     }
 
-    func encode<T: Encodable>(_ filename: String, _ data: T) {
-        guard let applicationSupportDirectory = AppSupportDirectory.url else { return }
-        let file = applicationSupportDirectory.appendingPathComponent(filename)
-
-        do {
-            try FileManager.default.createDirectory(at: applicationSupportDirectory, withIntermediateDirectories: true)
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            let encodedData = try encoder.encode(data)
-            try encodedData.write(to: file, options: .atomic)
-        } catch {
-            print("Error encoding data: \(error)")
+    func load<T: Decodable>(_ filename: String) async throws -> T {
+        guard let applicationSupportDirectory = AppSupportDirectory.url else {
+            throw PersistenceError.missingDirectory
         }
+        let file = applicationSupportDirectory.appendingPathComponent(filename)
+        let data = try Data(contentsOf: file)
+        return try JSONDecoder().decode(T.self, from: data)
+    }
+
+    func encode<T: Encodable>(_ filename: String, _ data: T) async throws {
+        guard let applicationSupportDirectory = AppSupportDirectory.url else {
+            throw PersistenceError.missingDirectory
+        }
+        let file = applicationSupportDirectory.appendingPathComponent(filename)
+        try FileManager.default.createDirectory(at: applicationSupportDirectory, withIntermediateDirectories: true)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        let encodedData = try encoder.encode(data)
+        try encodedData.write(to: file, options: .atomic)
     }
 
     func deleteItemByID(_ idToDelete: UUID) {
         if let index = passObjects.firstIndex(where: { $0.id == idToDelete }) {
             passObjects.remove(at: index)
-
-            encodePassObjects()
+            save()
         }
     }
 
     func deleteAllItems() {
         passObjects.removeAll()
-        encodePassObjects()
+        save()
     }
 
     func deleteDataFile() {
@@ -80,7 +92,11 @@ class ModelData: ObservableObject {
                 try FileManager.default.removeItem(at: fileURL)
             }
         } catch {
-            print("Error deleting JSON file: \(error)")
+            logger.error("Error deleting data file: \(error.localizedDescription)")
         }
     }
+}
+
+enum PersistenceError: Error {
+    case missingDirectory
 }

@@ -159,7 +159,7 @@ struct PassCard: View {
                 Button(action: {
                     let newPass = passObject.duplicate()
                     modelData.passObjects.append(newPass)
-                    modelData.encodePassObjects()
+                    modelData.save()
 
                     if generatePass(passObject: newPass) == nil {
                         alertMessage = "Failed to generate pass file"

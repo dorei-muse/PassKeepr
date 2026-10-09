@@ -293,7 +293,7 @@ struct EditPass: View {
             modelData.passObjects.append(objectToEdit)
         }
 
-        modelData.encodePassObjects()
+        modelData.save()
         return (true, nil)
     }
 

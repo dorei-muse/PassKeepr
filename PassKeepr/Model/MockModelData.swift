@@ -17,7 +17,7 @@ class MockModelData: ModelData {
         super.init()
         // Initialize with mock data
         passObjects = [PassObject.preview1, PassObject.preview2]
-        encodePassObjects()
+        save()
     }
 }
 
