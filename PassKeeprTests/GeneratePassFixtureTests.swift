@@ -170,9 +170,9 @@ final class GeneratePassFixtureTests: XCTestCase {
 
     // MARK: - Style and image fixtures
 
-    /// Strip image takes priority for the style, so this comes out as a
-    /// storeCard; the background image is saved and the strip image is
-    /// dropped because both are set.
+    /// The background image takes priority over the strip image: the pass
+    /// comes out as an eventTicket, the background image is saved, and the
+    /// strip image is dropped because both are set.
     func testStripPlusBackgroundPass() throws {
         var pass = PassObject()
         pass.id = try uuid("00000000-0000-0000-0000-000000000003")
@@ -184,9 +184,9 @@ final class GeneratePassFixtureTests: XCTestCase {
 
         let (json, files) = try generatePackage(from: pass)
 
-        XCTAssertEqual(Set(json.keys), baseTopLevelKeys.union(["storeCard", "barcode"]))
-        let storeCard = try XCTUnwrap(json["storeCard"] as? [String: Any])
-        XCTAssertTrue(storeCard.isEmpty)
+        XCTAssertEqual(Set(json.keys), baseTopLevelKeys.union(["eventTicket", "barcode"]))
+        let eventTicket = try XCTUnwrap(json["eventTicket"] as? [String: Any])
+        XCTAssertTrue(eventTicket.isEmpty)
         XCTAssertEqual(json["barcode"] as? NSDictionary, [
             "message": "123456789012",
             "format": "PKBarcodeFormatCode128",
@@ -227,9 +227,10 @@ final class GeneratePassFixtureTests: XCTestCase {
         ])
     }
 
-    /// The style flips to eventTicket because a background image is set, but
-    /// the background image itself is only saved for code128, pdf417, qr, and
-    /// none barcode types, so a code93 pass gets the style without the image.
+    /// A background image is only included for code128, pdf417, qr, and none
+    /// barcode types. For a code93 pass it is not saved, and the style stays
+    /// generic rather than claiming an eventTicket around an image that is
+    /// not in the package.
     func testBackgroundImageWithCode93Pass() throws {
         var pass = PassObject()
         pass.id = try uuid("00000000-0000-0000-0000-000000000005")
@@ -240,11 +241,11 @@ final class GeneratePassFixtureTests: XCTestCase {
 
         let (json, files) = try generatePackage(from: pass)
 
-        XCTAssertEqual(Set(json.keys), baseTopLevelKeys.union(["eventTicket"]))
+        XCTAssertEqual(Set(json.keys), baseTopLevelKeys.union(["generic"]))
         XCTAssertNil(json["barcode"])
-        let eventTicket = try XCTUnwrap(json["eventTicket"] as? [String: Any])
-        XCTAssertEqual(Set(eventTicket.keys), ["primaryFields"])
-        XCTAssertEqual(eventTicket["primaryFields"] as? NSArray, [
+        let generic = try XCTUnwrap(json["generic"] as? [String: Any])
+        XCTAssertEqual(Set(generic.keys), ["primaryFields"])
+        XCTAssertEqual(generic["primaryFields"] as? NSArray, [
             ["key": "primary", "label": "", "value": ""],
         ] as NSArray)
 
