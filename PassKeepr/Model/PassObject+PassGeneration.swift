@@ -13,13 +13,16 @@ let requiredFields: [String: Any] = [
 /// uses these to write the package; keeping them on the model means the
 /// decisions live with the data they are derived from.
 extension PassObject {
+    /// Whether this pass's barcode type is one PassKit displays natively,
+    /// rather than one the app renders as an image. Includes .none: with no
+    /// barcode, there is nothing to render as an image either.
+    var isNativeBarcodeType: Bool {
+        (barcodeType == BarcodeType.code128) || (barcodeType == BarcodeType.pdf417) || (barcodeType == BarcodeType.qr) || (barcodeType == BarcodeType.none)
+    }
+
     /// Whether a background image can be shown for this pass's barcode type
     var isBackgroundImageSupported: Bool {
-        if (barcodeType == BarcodeType.code128) || (barcodeType == BarcodeType.pdf417) || (barcodeType == BarcodeType.qr) || (barcodeType == BarcodeType.none) {
-            return true
-        } else {
-            return false
-        }
+        isNativeBarcodeType
     }
 
     /// Whether the background image belongs in the generated package
