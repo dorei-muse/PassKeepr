@@ -18,6 +18,7 @@
 		CB261FC44371423890D3D1AB /* ColorConversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D06D7E433AF43A4B3E10A4E /* ColorConversionTests.swift */; };
 		92CE8F7E6E30469EAE525D4B /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A411AFB1D23C4E78BEB2A0D8 /* PersistenceTests.swift */; };
 		3A491F60DAAA4704B8F1DB7A /* GeneratePassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7395E912AE3E472B8A162F4A /* GeneratePassTests.swift */; };
+		00A173CABB7FED0C3CC864E5 /* GeneratePassDesignRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1AD518C61E269B29EA95399 /* GeneratePassDesignRulesTests.swift */; };
 		3A02E74B2AF6EE1B00383BC2 /* PassKeeprTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A02E74A2AF6EE1B00383BC2 /* PassKeeprTests.swift */; };
 		3A02E7552AF6EE1B00383BC2 /* PassKeeprUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A02E7542AF6EE1B00383BC2 /* PassKeeprUITests.swift */; };
 		3A02E7572AF6EE1B00383BC2 /* PassKeeprUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A02E7562AF6EE1B00383BC2 /* PassKeeprUITestsLaunchTests.swift */; };
@@ -167,6 +168,7 @@
 		7D06D7E433AF43A4B3E10A4E /* ColorConversionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConversionTests.swift; sourceTree = "<group>"; };
 		A411AFB1D23C4E78BEB2A0D8 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		7395E912AE3E472B8A162F4A /* GeneratePassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePassTests.swift; sourceTree = "<group>"; };
+		B1AD518C61E269B29EA95399 /* GeneratePassDesignRulesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePassDesignRulesTests.swift; sourceTree = "<group>"; };
 		3A02E74A2AF6EE1B00383BC2 /* PassKeeprTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassKeeprTests.swift; sourceTree = "<group>"; };
 		3A02E7502AF6EE1B00383BC2 /* PassKeeprUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PassKeeprUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A02E7542AF6EE1B00383BC2 /* PassKeeprUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassKeeprUITests.swift; sourceTree = "<group>"; };
@@ -373,6 +375,7 @@
 				7D06D7E433AF43A4B3E10A4E /* ColorConversionTests.swift */,
 				A411AFB1D23C4E78BEB2A0D8 /* PersistenceTests.swift */,
 				7395E912AE3E472B8A162F4A /* GeneratePassTests.swift */,
+				B1AD518C61E269B29EA95399 /* GeneratePassDesignRulesTests.swift */,
 			);
 			path = PassKeeprTests;
 			sourceTree = "<group>";
@@ -838,6 +841,7 @@
 			files = (
 				3A02E74B2AF6EE1B00383BC2 /* PassKeeprTests.swift in Sources */,
 				3A491F60DAAA4704B8F1DB7A /* GeneratePassTests.swift in Sources */,
+				00A173CABB7FED0C3CC864E5 /* GeneratePassDesignRulesTests.swift in Sources */,
 				03359133834B424BAD151324 /* PassObjectCodableTests.swift in Sources */,
 				3F4714BDFE614DBA914776DD /* BarcodeTypeMappingTests.swift in Sources */,
 				2D780600B0454CD8B9E45881 /* WifiQrCodeTests.swift in Sources */,
