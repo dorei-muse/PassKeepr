@@ -36,7 +36,9 @@ final class GeneratePassTests: XCTestCase {
 
         let entryNames = archive.map { $0.path }
         XCTAssertTrue(entryNames.contains("pass.json"))
-        XCTAssertTrue(entryNames.contains("manifest.json"))
+        // generatePass produces the unsigned package; manifest.json and the
+        // signature are added by the signing server, so they are not expected here
+        XCTAssertTrue(entryNames.contains("icon.png"))
     }
 
     func testGeneratePassIncludesBarcodeInPassJson() throws {
