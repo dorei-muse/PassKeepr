@@ -11,6 +11,15 @@
 		3A02E73C2AF6EE1000383BC2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A02E73B2AF6EE1000383BC2 /* ContentView.swift */; };
 		3A02E73E2AF6EE1A00383BC2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A02E73D2AF6EE1A00383BC2 /* Assets.xcassets */; };
 		3A02E7412AF6EE1A00383BC2 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A02E7402AF6EE1A00383BC2 /* Preview Assets.xcassets */; };
+		03359133834B424BAD151324 /* PassObjectCodableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 575FC61FAEC24880B895D370 /* PassObjectCodableTests.swift */; };
+		3F4714BDFE614DBA914776DD /* BarcodeTypeMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6957F2B471574EABAC726E93 /* BarcodeTypeMappingTests.swift */; };
+		2D780600B0454CD8B9E45881 /* WifiQrCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64C656F019A0464AA0388761 /* WifiQrCodeTests.swift */; };
+		C72626E1FB964B6A8FD86945 /* VCardQrCodeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44A5D9C759F94E8AA7471CD4 /* VCardQrCodeTests.swift */; };
+		CB261FC44371423890D3D1AB /* ColorConversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D06D7E433AF43A4B3E10A4E /* ColorConversionTests.swift */; };
+		92CE8F7E6E30469EAE525D4B /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A411AFB1D23C4E78BEB2A0D8 /* PersistenceTests.swift */; };
+		3A491F60DAAA4704B8F1DB7A /* GeneratePassTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7395E912AE3E472B8A162F4A /* GeneratePassTests.swift */; };
+		F7C828CE905FB677BA22D00D /* GeneratePassFixtureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E540BEF29610D537EBFFDC9 /* GeneratePassFixtureTests.swift */; };
+		00A173CABB7FED0C3CC864E5 /* GeneratePassDesignRulesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1AD518C61E269B29EA95399 /* GeneratePassDesignRulesTests.swift */; };
 		3A02E74B2AF6EE1B00383BC2 /* PassKeeprTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A02E74A2AF6EE1B00383BC2 /* PassKeeprTests.swift */; };
 		3A02E7552AF6EE1B00383BC2 /* PassKeeprUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A02E7542AF6EE1B00383BC2 /* PassKeeprUITests.swift */; };
 		3A02E7572AF6EE1B00383BC2 /* PassKeeprUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A02E7562AF6EE1B00383BC2 /* PassKeeprUITestsLaunchTests.swift */; };
@@ -25,6 +34,7 @@
 		BA11183B2FDE3A6D00501423 /* LocationSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA11183A2FDE3A6D00501423 /* LocationSelection.swift */; };
 		BA12869C2B95756500AC82E4 /* AztecView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA12869B2B95756500AC82E4 /* AztecView.swift */; };
 		BA12869E2B957BD700AC82E4 /* GeneratePass.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA12869D2B957BD700AC82E4 /* GeneratePass.swift */; };
+		DB2B2E5E0D52EEE51DB53417 /* PassObject+PassGeneration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC7F246E1DF8A5B3ACC0F320 /* PassObject+PassGeneration.swift */; };
 		BA12A7312F66086800B55431 /* ThumbnailImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA12A7302F66086800B55431 /* ThumbnailImageView.swift */; };
 		BA12A7332F66089600B55431 /* CustomizeThumbnailImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA12A7322F66089600B55431 /* CustomizeThumbnailImage.swift */; };
 		BA12A7352F68EF2600B55431 /* AuxiliaryFieldSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA12A7342F68EF2600B55431 /* AuxiliaryFieldSelection.swift */; };
@@ -153,6 +163,15 @@
 		3A02E73D2AF6EE1A00383BC2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A02E7402AF6EE1A00383BC2 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		3A02E7462AF6EE1B00383BC2 /* PassKeeprTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PassKeeprTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		575FC61FAEC24880B895D370 /* PassObjectCodableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassObjectCodableTests.swift; sourceTree = "<group>"; };
+		6957F2B471574EABAC726E93 /* BarcodeTypeMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeTypeMappingTests.swift; sourceTree = "<group>"; };
+		64C656F019A0464AA0388761 /* WifiQrCodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WifiQrCodeTests.swift; sourceTree = "<group>"; };
+		44A5D9C759F94E8AA7471CD4 /* VCardQrCodeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCardQrCodeTests.swift; sourceTree = "<group>"; };
+		7D06D7E433AF43A4B3E10A4E /* ColorConversionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorConversionTests.swift; sourceTree = "<group>"; };
+		A411AFB1D23C4E78BEB2A0D8 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
+		7395E912AE3E472B8A162F4A /* GeneratePassTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePassTests.swift; sourceTree = "<group>"; };
+		3E540BEF29610D537EBFFDC9 /* GeneratePassFixtureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePassFixtureTests.swift; sourceTree = "<group>"; };
+		B1AD518C61E269B29EA95399 /* GeneratePassDesignRulesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePassDesignRulesTests.swift; sourceTree = "<group>"; };
 		3A02E74A2AF6EE1B00383BC2 /* PassKeeprTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassKeeprTests.swift; sourceTree = "<group>"; };
 		3A02E7502AF6EE1B00383BC2 /* PassKeeprUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PassKeeprUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A02E7542AF6EE1B00383BC2 /* PassKeeprUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassKeeprUITests.swift; sourceTree = "<group>"; };
@@ -169,6 +188,7 @@
 		BA11183A2FDE3A6D00501423 /* LocationSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSelection.swift; sourceTree = "<group>"; };
 		BA12869B2B95756500AC82E4 /* AztecView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecView.swift; sourceTree = "<group>"; };
 		BA12869D2B957BD700AC82E4 /* GeneratePass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneratePass.swift; sourceTree = "<group>"; };
+		EC7F246E1DF8A5B3ACC0F320 /* PassObject+PassGeneration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassObject+PassGeneration.swift; sourceTree = "<group>"; };
 		BA12A7302F66086800B55431 /* ThumbnailImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThumbnailImageView.swift; sourceTree = "<group>"; };
 		BA12A7322F66089600B55431 /* CustomizeThumbnailImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomizeThumbnailImage.swift; sourceTree = "<group>"; };
 		BA12A7342F68EF2600B55431 /* AuxiliaryFieldSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuxiliaryFieldSelection.swift; sourceTree = "<group>"; };
@@ -352,6 +372,15 @@
 			isa = PBXGroup;
 			children = (
 				3A02E74A2AF6EE1B00383BC2 /* PassKeeprTests.swift */,
+				575FC61FAEC24880B895D370 /* PassObjectCodableTests.swift */,
+				6957F2B471574EABAC726E93 /* BarcodeTypeMappingTests.swift */,
+				64C656F019A0464AA0388761 /* WifiQrCodeTests.swift */,
+				44A5D9C759F94E8AA7471CD4 /* VCardQrCodeTests.swift */,
+				7D06D7E433AF43A4B3E10A4E /* ColorConversionTests.swift */,
+				A411AFB1D23C4E78BEB2A0D8 /* PersistenceTests.swift */,
+				7395E912AE3E472B8A162F4A /* GeneratePassTests.swift */,
+				3E540BEF29610D537EBFFDC9 /* GeneratePassFixtureTests.swift */,
+				B1AD518C61E269B29EA95399 /* GeneratePassDesignRulesTests.swift */,
 			);
 			path = PassKeeprTests;
 			sourceTree = "<group>";
@@ -471,6 +500,7 @@
 				BABAADD12B0A69950014C73B /* ModelData.swift */,
 				BADD64672CA5021D00E8F0A0 /* MockModelData.swift */,
 				BA12869D2B957BD700AC82E4 /* GeneratePass.swift */,
+				EC7F246E1DF8A5B3ACC0F320 /* PassObject+PassGeneration.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -785,6 +815,7 @@
 				BAF0FB752D28D5E200948089 /* HeaderTextField.swift in Sources */,
 				BAD0D7122D1528350058054E /* SecondaryFieldSelection.swift in Sources */,
 				BA12869E2B957BD700AC82E4 /* GeneratePass.swift in Sources */,
+				DB2B2E5E0D52EEE51DB53417 /* PassObject+PassGeneration.swift in Sources */,
 				BA1515B92CE2BC6900DB1799 /* MeasureViewSize.swift in Sources */,
 				BAD0D7102D15130C0058054E /* SecondaryTextField.swift in Sources */,
 				BA0C54E42F6505B600DC2C7F /* PassKitConstants.swift in Sources */,
@@ -816,6 +847,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				3A02E74B2AF6EE1B00383BC2 /* PassKeeprTests.swift in Sources */,
+				3A491F60DAAA4704B8F1DB7A /* GeneratePassTests.swift in Sources */,
+				F7C828CE905FB677BA22D00D /* GeneratePassFixtureTests.swift in Sources */,
+				00A173CABB7FED0C3CC864E5 /* GeneratePassDesignRulesTests.swift in Sources */,
+				03359133834B424BAD151324 /* PassObjectCodableTests.swift in Sources */,
+				3F4714BDFE614DBA914776DD /* BarcodeTypeMappingTests.swift in Sources */,
+				2D780600B0454CD8B9E45881 /* WifiQrCodeTests.swift in Sources */,
+				C72626E1FB964B6A8FD86945 /* VCardQrCodeTests.swift in Sources */,
+				CB261FC44371423890D3D1AB /* ColorConversionTests.swift in Sources */,
+				92CE8F7E6E30469EAE525D4B /* PersistenceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

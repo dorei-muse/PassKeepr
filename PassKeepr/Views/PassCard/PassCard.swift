@@ -30,7 +30,7 @@ struct PassCard: View {
                         .frame(height: size.height * 0.2)
                         .padding(0)
 
-                    if shouldStripImageBeAddedToPass(passObject: passObject) {
+                    if passObject.shouldAddStripImage {
                         if let uiImage = UIImage(data: passObject.stripImage) {
                             let imageAspectRatio = uiImage.size.width / uiImage.size.height
                             Image(uiImage: uiImage)
@@ -225,15 +225,13 @@ struct PassCard: View {
 
         // Upload for signing
         Task {
-            passSigner.uploadPKPassFile(fileURL: passDirectory, passUuid: passObject.id)
-        }
+            passSigner.uploadPKPassFile(fileURL: passDirectory, passUuid: passObject.id)        }
     }
 }
 
 struct ActivityView: UIViewControllerRepresentable {
     let activityItems: [Any]
     let applicationActivities: [UIActivity]? = nil
-
     func makeUIViewController(context _: Context) -> UIActivityViewController {
         let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
         return controller

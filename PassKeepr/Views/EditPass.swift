@@ -94,8 +94,7 @@ struct EditPass: View {
                                     .clipShape(RoundedRectangle(cornerRadius: 4))
                             }
                             InlineTitleTextField(text: $renameText, onCommit: commitRename)
-                                .frame(minWidth: 150)
-                        }
+                                .frame(minWidth: 150)                        }
                     } else {
                         Menu {
                             Button("Rename", systemImage: "pencil") {
@@ -367,7 +366,7 @@ struct EditPass: View {
             AuxiliaryFieldSelection(passObject: $tempObject, disableControl: hasEditPassButtonBeenPressed)
             HeaderFieldSelection(passObject: $tempObject, disableControl: hasEditPassButtonBeenPressed)
 
-            if tempObject.barcodeType == BarcodeType.none || tempObject.barcodeType == BarcodeType.code128 || tempObject.barcodeType == BarcodeType.pdf417 || tempObject.barcodeType == BarcodeType.qr {
+            if tempObject.isBackgroundImageSupported {
                 StripImageSelection(passObject: $tempObject, disableControl: hasEditPassButtonBeenPressed)
             }
 

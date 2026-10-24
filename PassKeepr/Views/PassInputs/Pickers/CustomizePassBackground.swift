@@ -176,7 +176,7 @@ struct CustomizePassBackground: View {
     }
 
     private var isBackgroundImageSupported: Bool {
-        getIsBackgroundImageSupported(passObject: tempPassObject)
+        tempPassObject.isBackgroundImageSupported
     }
 
     @ViewBuilder
