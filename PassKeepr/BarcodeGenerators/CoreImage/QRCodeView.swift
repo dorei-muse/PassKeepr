@@ -6,15 +6,18 @@ struct QRCodeView: View {
     var data: String
     var correctionLevel: QrCodeCorrectionLevel
     var encoding: QrCodeEncoding
+    // Width, in points, the code will be displayed at. The list passes its
+    // exact width (60pt); other callers use the default, a high-res image
+    // SwiftUI scales down. No GeometryReader: measuring the width here meant
+    // a layout pass plus a barcode render per card while scrolling.
+    var targetWidth: CGFloat = 400
     @Environment(\.displayScale) private var displayScale
 
     var body: some View {
-        GeometryReader { geometry in
-            if let QRCodeImage = GenerateQRCode(string: data, viewWidth: geometry.size.width, correctionLevel: correctionLevel, encoding: encoding, displayScale: displayScale) {
-                Image(uiImage: QRCodeImage)
-                    .resizable()
-                    .scaledToFit()
-            }
+        if let QRCodeImage = GenerateQRCode(string: data, viewWidth: targetWidth, correctionLevel: correctionLevel, encoding: encoding, displayScale: displayScale) {
+            Image(uiImage: QRCodeImage)
+                .resizable()
+                .scaledToFit()
         }
         .aspectRatio(1.0, contentMode: .fit)
     }
@@ -25,6 +28,14 @@ struct QRCodeView: View {
 }
 
 func GenerateQRCode(string: String, viewWidth: CGFloat, correctionLevel: QrCodeCorrectionLevel, encoding: QrCodeEncoding, displayScale: CGFloat) -> UIImage? {
+    // Render at display pixels, not points, so the image is crisp at its
+    // displayed size without SwiftUI having to upscale a 1x render.
+    let pixelWidth = max(1, Int((viewWidth * displayScale).rounded()))
+    let cacheKey = "qr|\(string)|\(correctionLevel)|\(encoding)|\(pixelWidth)"
+    if let cached = BarcodeImageCache.cachedImage(forKey: cacheKey) {
+        return cached
+    }
+
     let filter = CIFilter.qrCodeGenerator()
 
     filter.correctionLevel = "\(correctionLevel)"
@@ -32,15 +43,14 @@ func GenerateQRCode(string: String, viewWidth: CGFloat, correctionLevel: QrCodeC
 
     guard let outputImage = filter.outputImage else { return nil }
 
-    let xScale = viewWidth / outputImage.extent.size.width
-    let yScale = viewWidth / outputImage.extent.size.height
+    let scale = CGFloat(pixelWidth) / outputImage.extent.size.width
+    let scaledImage = outputImage.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
 
-    let scaledImage = outputImage.transformed(by: CGAffineTransform(scaleX: xScale, y: yScale))
-
-    // Convert the CIImage to a UIImage
-    let context = CIContext()
-    if let cgImage = context.createCGImage(scaledImage, from: scaledImage.extent) {
+    // Convert the CIImage to a UIImage, using the shared context (creating a
+    // CIContext per render was a large part of the per-card cost).
+    if let cgImage = BarcodeImageCache.context.createCGImage(scaledImage, from: scaledImage.extent) {
         let qrCodeImage = UIImage(cgImage: cgImage, scale: displayScale, orientation: .up)
+        BarcodeImageCache.store(qrCodeImage, forKey: cacheKey)
         return qrCodeImage
     }
 
