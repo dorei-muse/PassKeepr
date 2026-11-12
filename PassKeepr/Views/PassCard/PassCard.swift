@@ -28,7 +28,14 @@ struct PassCard: View {
     }
 
     var body: some View {
+        // List-only flattening: renders the background (blurred shadow,
+        // blurred background photo, scalloped path) once per card into a
+        // cached texture, instead of re-rasterizing it on every frame while
+        // scrolling. The overlay text and barcode stay vector-sharp above
+        // it. Edit mode is untouched: EditablePassCard does not use this
+        // modifier, and the shared background view is unchanged.
         PassCardBackgroundView(passObject: passObject, scallopsPerEdge: 30)
+            .drawingGroup()
             .overlay(
                 VStack {
                     PassCardTopSection(passObject: passObject)
