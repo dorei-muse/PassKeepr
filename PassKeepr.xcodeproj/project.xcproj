@@ -191,6 +191,13 @@
           "children": [
             { "path": "MockModelData.swift", "target-membership": [ "PassKeepr/compile-sources" ] },
           ],
+        }, {
+          "kind": "group",
+          "path": "Intents",
+          "children": [
+            { "path": "PassEntity.swift", "target-membership": [ "PassKeepr/compile-sources" ] },
+            { "path": "CreatePassIntent.swift", "target-membership": [ "PassKeepr/compile-sources" ] },
+          ],
         },
         { "path": "PassKeeprApp.swift", "target-membership": [ "PassKeepr/compile-sources" ] },
         { "path": "Assets.xcassets", "target-membership": [ "PassKeepr/resources" ] },
