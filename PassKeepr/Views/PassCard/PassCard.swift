@@ -4,31 +4,29 @@ import SwiftUI
 struct PassCard: View {
     @EnvironmentObject var modelData: ModelData
     @EnvironmentObject var passSigner: pkPassSigner
-    @State private var size: CGSize = CGSizeZero
     @State private var showAlert = false
     @State private var alertMessage = ""
     @State private var isSigningForShare = false
     @State private var shareURL: URL? = nil
     @State private var showShareSheet = false
     var passObject: PassObject
+    // Card size, computed once by PassGridView from the measured grid width and
+    // the pass aspect ratio. Passed down so this card never needs its own
+    // GeometryReader just to size its proportional sections.
+    var cardSize: CGSize
+
+    // Width available to the 1D barcode, after the .padding(.horizontal, 20)
+    // applied to its container below.
+    private var barcodeWidth: CGFloat {
+        max(0, cardSize.width - 40)
+    }
 
     var body: some View {
         PassCardBackgroundView(passObject: passObject, scallopsPerEdge: 30)
-            .background(GeometryReader { geometry in
-                Color.clear
-                    .onAppear {
-                        size = geometry.size
-                    }
-                    .onChange(of: geometry.size) {
-                        Task {
-                            size = geometry.size
-                        }
-                    }
-            })
             .overlay(
                 VStack {
                     PassCardTopSection(passObject: passObject)
-                        .frame(height: size.height * 0.2)
+                        .frame(height: cardSize.height * 0.2)
                         .padding(0)
 
                     if passObject.shouldIncludeStripImage {
@@ -77,7 +75,7 @@ struct PassCard: View {
                             .padding(.leading, 8)
                             Spacer()
                         }
-                        .frame(height: size.height * 0.1)
+                        .frame(height: cardSize.height * 0.1)
                     }
 
                     if passObject.hasSecondaryFieldOneContent {
@@ -106,12 +104,12 @@ struct PassCard: View {
                             .padding(.leading, 8)
                             Spacer()
                         }
-                        .frame(height: size.height * 0.1)
+                        .frame(height: cardSize.height * 0.1)
                     }
                     Spacer()
 
                     if passObject.barcodeType == BarcodeType.qr, passObject.barcodeString != "" {
-                        QRCodeView(data: passObject.barcodeString, correctionLevel: passObject.qrCodeCorrectionLevel, encoding: passObject.qrCodeEncoding)
+                        QRCodeView(data: passObject.barcodeString, correctionLevel: passObject.qrCodeCorrectionLevel, encoding: passObject.qrCodeEncoding, targetWidth: 60)
                             .padding(3)
                             .background {
                                 RoundedRectangle(cornerRadius: 2)
@@ -123,10 +121,10 @@ struct PassCard: View {
                         Group {
                             if passObject.barcodeType.isEnteredBarcodeValueValid(string: passObject.barcodeString) == true {
                                 if passObject.barcodeType == BarcodeType.code128 {
-                                    Code128View(data: passObject.barcodeString)
+                                    Code128View(data: passObject.barcodeString, targetWidth: barcodeWidth)
                                         .padding(10)
                                 } else if passObject.barcodeType == BarcodeType.pdf417 {
-                                    PDF417View(data: passObject.barcodeString)
+                                    PDF417View(data: passObject.barcodeString, targetWidth: barcodeWidth, targetHeight: barcodeWidth / 3)
                                         .padding(5)
                                 }
                             }
@@ -246,5 +244,5 @@ struct ActivityView: UIViewControllerRepresentable {
 }
 
 #Preview {
-    PassCard(passObject: MockModelData().passObjects[0])
+    PassCard(passObject: MockModelData().passObjects[0], cardSize: CGSize(width: 180, height: 180 / PassKitConstants.passAspectRatio))
 }
