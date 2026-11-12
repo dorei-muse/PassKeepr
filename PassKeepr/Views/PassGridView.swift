@@ -355,10 +355,14 @@ struct PassCardContainer: View {
 
     var body: some View {
         NavigationLink(value: passObject.id) {
+            // The zoom source must be the tappable card itself, not the
+            // NavigationLink around it. With the marker on the link, SwiftUI
+            // had no source frame to zoom from and the push fell back to the
+            // default transition with no animation and no error.
             PassCard(passObject: passObject)
+                .matchedTransitionSourceIfAvailable(id: passObject.id, in: zoomNamespace)
         }
         .buttonStyle(.plain)
-        .matchedTransitionSourceIfAvailable(id: passObject.id, in: zoomNamespace)
     }
 }
 
