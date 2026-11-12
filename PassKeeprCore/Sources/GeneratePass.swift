@@ -1,6 +1,9 @@
 import CoreGraphics
 import Foundation
+import os
 import ZIPFoundation
+
+private let logger = Logger(subsystem: "com.hanshaw.passKeepr", category: "GeneratePass")
 
 // Helper: save 1x and optional @2x/@3x variants from PassObject image
 func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWidth: CGFloat, maxHeight: CGFloat) {
@@ -14,7 +17,7 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
     let srcPixelH = CGFloat(cgImage.height)
 
     // Debug: initial sizes
-    print("[saveImageVariants] name=\(name) srcPixels=\(Int(srcPixelW))x\(Int(srcPixelH))")
+    logger.debug("[saveImageVariants] name=\(name) srcPixels=\(Int(srcPixelW))x\(Int(srcPixelH))")
 
     // Thresholds for 1x/2x/3x
     let t1W = maxWidth
@@ -23,7 +26,7 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
     let t2H = maxHeight * 2.0
     let t3W = maxWidth * 3.0
     let t3H = maxHeight * 3.0
-    print("[saveImageVariants] thresholds: 1x=\(Int(t1W))x\(Int(t1H)) 2x=\(Int(t2W))x\(Int(t2H)) 3x=\(Int(t3W))x\(Int(t3H))")
+    logger.debug("[saveImageVariants] thresholds: 1x=\(Int(t1W))x\(Int(t1H)) 2x=\(Int(t2W))x\(Int(t2H)) 3x=\(Int(t3W))x\(Int(t3H))")
 
     // Helper to save data or resized image for a given pixel size
     func saveResized(_ targetW: Int, _ targetH: Int, fileSuffix: String?) {
@@ -34,11 +37,11 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
     }
 
     // Determine classification and generate accordingly using per-axis (OR) checks
-    print("[saveImageVariants] per-axis thresholds check: 1x=\(Int(t1W))x\(Int(t1H)) 2x=\(Int(t2W))x\(Int(t2H)) 3x=\(Int(t3W))x\(Int(t3H))")
+    logger.debug("[saveImageVariants] per-axis thresholds check: 1x=\(Int(t1W))x\(Int(t1H)) 2x=\(Int(t2W))x\(Int(t2H)) 3x=\(Int(t3W))x\(Int(t3H))")
 
     // Any axis above 2x -> classify as 3x
     if srcPixelW >= t2W || srcPixelH >= t2H {
-        print("[saveImageVariants] classification=3x (axis-based)")
+        logger.debug("[saveImageVariants] classification=3x (axis-based)")
         let final3xW: Int
         let final3xH: Int
 
@@ -46,7 +49,7 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
         // Otherwise, keep original dimensions for 3x variant
         if (srcPixelW > t3W) || (srcPixelH > t3H) {
             let downscale = min(t3W / srcPixelW, t3H / srcPixelH)
-            print("[saveImageVariants] Downscaling image. downscale=\(downscale)")
+            logger.debug("[saveImageVariants] Downscaling image. downscale=\(downscale)")
             final3xW = max(1, Int((srcPixelW * downscale).rounded()))
             final3xH = max(1, Int((srcPixelH * downscale).rounded()))
         } else {
@@ -54,14 +57,14 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
             final3xH = max(1, Int(srcPixelH.rounded()))
         }
 
-        print("[saveImageVariants] final3x=\(final3xW)x\(final3xH)")
+        logger.debug("[saveImageVariants] final3x=\(final3xW)x\(final3xH)")
         // If the original image is already the correct dimensions for 3x, save it directly (don't bother resizing and risk quality loss from an encode/decode cycle)
         // Otherwise, resize it to 3x dimensions before saving
         if final3xW == Int(srcPixelW.rounded()), final3xH == Int(srcPixelH.rounded()) {
-            print("[saveImageVariants] saving original as \(name)@3x.png")
+            logger.debug("[saveImageVariants] saving original as \(name)@3x.png")
             savePNGToDirectory(pngData: data, destinationDirectory: passDirectory, fileName: "\(name)@3x")
         } else if let png3 = ImageIOHelpers.resizedPNGData(from: cgImage, width: final3xW, height: final3xH) {
-            print("[saveImageVariants] saving resized 3x \(final3xW)x\(final3xH) as \(name)@3x.png")
+            logger.debug("[saveImageVariants] saving resized 3x \(final3xW)x\(final3xH) as \(name)@3x.png")
             savePNGToDirectory(pngData: png3, destinationDirectory: passDirectory, fileName: "\(name)@3x")
         }
 
@@ -74,22 +77,22 @@ func saveImageVariants(from data: Data, name: String, passDirectory: URL, maxWid
         let target1xH = max(1, Int((CGFloat(final3xH) / 3.0).rounded()))
         saveResized(target1xW, target1xH, fileSuffix: nil)
 
-        print("[saveImageVariants] derived 2x=\(target2xW)x\(target2xH) 1x=\(target1xW)x\(target1xH)")
+        logger.debug("[saveImageVariants] derived 2x=\(target2xW)x\(target2xH) 1x=\(target1xW)x\(target1xH)")
 
     } else if srcPixelW >= t1W || srcPixelH >= t1H { // Any axis above 1x -> classify as 2x
-        print("[saveImageVariants] classification=2x (axis-based)")
+        logger.debug("[saveImageVariants] classification=2x (axis-based)")
         let final2xW = max(1, Int(srcPixelW.rounded()))
         let final2xH = max(1, Int(srcPixelH.rounded()))
         savePNGToDirectory(pngData: data, destinationDirectory: passDirectory, fileName: "\(name)@2x")
-        print("[saveImageVariants] saving original as \(name)@2x.png (source dims) \(final2xW)x\(final2xH)")
+        logger.debug("[saveImageVariants] saving original as \(name)@2x.png (source dims) \(final2xW)x\(final2xH)")
 
         let target1xW = max(1, Int((CGFloat(final2xW) / 2.0).rounded()))
         let target1xH = max(1, Int((CGFloat(final2xH) / 2.0).rounded()))
         saveResized(target1xW, target1xH, fileSuffix: nil)
-        print("[saveImageVariants] derived 1x=\(target1xW)x\(target1xH)")
+        logger.debug("[saveImageVariants] derived 1x=\(target1xW)x\(target1xH)")
 
     } else { // Smaller than 1x: only save as 1x
-        print("[saveImageVariants] classification=smaller_than_1x — saving only 1x")
+        logger.debug("[saveImageVariants] classification=smaller_than_1x — saving only 1x")
         savePNGToDirectory(pngData: data, destinationDirectory: passDirectory, fileName: name)
     }
 }
@@ -160,7 +163,7 @@ func zipDirectory(uuid: UUID, directory: URL = URL.applicationSupportDirectory) 
     do {
         archive = try Archive(url: pkpassDirectory, accessMode: .create)
     } catch {
-        print("Unable to create zip file at path: \(pkpassDirectory.path): \(error)")
+        logger.error("Unable to create zip file at path: \(pkpassDirectory.path): \(error)")
         return nil
     }
 
@@ -224,8 +227,8 @@ func savePNGToDirectory(pngData: Data, destinationDirectory: URL, fileName: Stri
 
     do {
         try pngData.write(to: destinationURL, options: .atomic)
-        print("Image saved successfully at \(destinationURL.path)")
+        logger.debug("Image saved successfully at \(destinationURL.path)")
     } catch {
-        print("Error saving image: \(error.localizedDescription)")
+        logger.error("Error saving image: \(error.localizedDescription)")
     }
 }
