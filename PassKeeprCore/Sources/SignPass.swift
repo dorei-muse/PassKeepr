@@ -58,8 +58,7 @@ public class pkPassSigner: NSObject, ObservableObject, URLSessionDelegate {
 
                     // Save the response data to a file
                     if let data = data {
-                        let fileManager = FileManager.default
-                        let appSupportDirectory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                        guard let appSupportDirectory = AppSupportDirectory.url else { return }
                         let destinationURL = appSupportDirectory.appendingPathComponent("\(passUuid).pkpass")
                         DispatchQueue.main.async {
                             self.fileURL = destinationURL

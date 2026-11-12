@@ -225,8 +225,7 @@ struct EditPass: View {
                     hasEditPassButtonBeenPressed = false // Disable loading circle
                 }
             } else {
-                let fileManager = FileManager.default
-                let appSupportDirectory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+                guard let appSupportDirectory = AppSupportDirectory.url else { return }
                 let destinationURL = appSupportDirectory.appendingPathComponent("\(tempObject.id).pkpass")
 
                 ActivityView(activityItems: [destinationURL]) {

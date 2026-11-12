@@ -196,7 +196,7 @@ struct PassCard: View {
 
         // Clean up old files before generating new ones
         let fileManager = FileManager.default
-        let appSupportDirectory = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        guard let appSupportDirectory = AppSupportDirectory.url else { return }
         let oldPkpassURL = appSupportDirectory.appendingPathComponent("\(passObject.id).pkpass")
         let oldPassDirectory = appSupportDirectory.appendingPathComponent("\(passObject.id).pass")
 
